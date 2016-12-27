@@ -1,0 +1,291 @@
+﻿
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+
+    //Load the students in the List and displays when the documnet is loaded
+    $(document).ready(function () {
+        jQuery.support.cors = true;
+        $.ajax({
+            url: '/api/Uczestniks',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                WriteResponses(data);
+            },
+            error: function (x, y, z) {
+                alert(x + '\n' + y + '\n' + z);
+            }
+        });
+
+        //Displays in a Table
+        function WriteResponses(students) {
+            var strResult = "<table class=\"table-striped\"><th>ID</th><th>Imie</th><th>Nazwisko</th><th>takObiad</th><th>takNocleg</th><th>takOplata</th><th>Data Przyjazdu</th><th>Data Odjazdu</th>";
+            $.each(students, function (index, student) {
+                strResult += "<tr><td>" + student.ID + "</td><td> " + student.Imie + "</td><td>" + student.Nazwisko + "</td><td>" + student.takObiad + "</td><td>" + student.takNocleg + "</td><td>" + student.takOplata + "</td><td>" + student.dataPrzyjazdu + "</td><td>" + student.dataOdjazdu + "</td></tr>";
+            });
+            strResult += "</table>";
+            $("#divResult").html(strResult);
+        }
+
+    });
+
+    //Get a Particular Student based on ID
+    function GetStudent() {
+        jQuery.support.cors = true;
+        $.ajax({
+            url: '/api/Uczestniks/' + document.getElementById('studentId').value,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                WriteResponse(data);
+            },
+            error: function (x, y, z) {
+                alert('The Student not found in the List for the given ID');
+            }
+        });
+
+        function WriteResponse(student) {
+            document.getElementById('ID').innerHTML = "<h3>" + student.ID + "</h3>";
+            document.getElementById('Imie').innerHTML = "<h3>" + student.Imie + "</h3>";
+            document.getElementById('Nazwisko').innerHTML = "<h3>" + student.Nazwisko + "</h3>";
+            document.getElementById('takObiad').innerHTML = "<h3>" + student.takObiad + "</h3>";
+            document.getElementById('takNocleg').innerHTML = "<h3>" + student.takNocleg + "</h3>";
+            document.getElementById('takOplata').innerHTML = "<h3>" + student.takOplata + "</h3>";
+            document.getElementById('dataPrzyjazdu').innerHTML = "<h3>" + student.dataPrzyjazdu + "</h3>";
+            document.getElementById('dataOdjazdu').innerHTML = "<h3>" + student.dataOdjazdu + "</h3>";
+        }
+    }
+
+    //Adds a Student to the List
+    function AddStudent() {
+        var student = {
+            ID: document.getElementById('newID').value,
+            Imie: document.getElementById('newImie').value,
+            Nazwisko: document.getElementById('newNazwisko').value,
+            takObiad: document.getElementById('newTakObiad').value,
+            takNocleg: document.getElementById('newTakNocleg').value,
+            takOplata: document.getElementById('newTakOplata').value,
+            dataPrzyjazdu: document.getElementById('newDataPrzyjazdu').value,
+            dataOdjazdu: document.getElementById('newDataOdjazdu').value
+        };
+
+        $.ajax({
+            url: '/api/Uczestniks/',
+            type: 'POST',
+            data: JSON.stringify(student),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                alert('Student added Successfully');
+                GetAllStudents();
+            },
+            error: function () {
+                alert('Student not Added');
+            }
+        });
+    }
+    function Delete() {
+        $.ajax({
+            url: '/api/Uczestniks/' + document.getElementById('newID').value,
+            type: 'DELETE',
+            success: function (data) {
+                alert('Usunięto pomyślnie');
+                GetAllStudents();
+            },
+            error: function () {
+                alert('Nie można usunąć uzytkownika o danym ID');
+            }
+        })
+    }
+    //Updates the student Details in the List
+    function PutStudent() {
+        var student = {
+            ID: document.getElementById('newID').value,
+            Imie: document.getElementById('newImie').value,
+            Nazwisko: document.getElementById('newNazwisko').value,
+            takObiad: document.getElementById('newTakObiad').value,
+            takNocleg: document.getElementById('newTakNocleg').value,
+            takOplata: document.getElementById('newTakOplata').value,
+            dataPrzyjazdu: document.getElementById('newDataPrzyjazdu').value,
+            dataOdjazdu: document.getElementById('newDataOdjazdu').value
+        };
+
+        $.ajax({
+            url: '/api/Uczestniks/' + document.getElementById('newID').value,
+            type: 'PUT',
+            data: JSON.stringify(student),
+            contentType: "application/json;charset=utf-8",
+            success: function (data) {
+                alert('Details Updated Successfully');
+                GetAllStudents();
+            },
+            error: function () {
+                alert('Unable to Update for the Given ID');
+            }
+        });
+    }
+
+    function GetAllStudents() {
+        jQuery.support.cors = true;
+        $.ajax({
+            url: '/api/Uczestniks/',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                WriteResponses(data);
+            },
+            error: function (x, y, z) {
+                alert(x + '\n' + y + '\n' + z);
+            }
+        });
+
+        //Displays in a Table
+        function WriteResponses(students) {
+            var strResult = "<table class=\"table-striped\"><th>ID</th><th>Imie</th><th>Nazwisko</th><th>takObiad</th><th>takNocleg</th><th>takOplata</th><th>Data Przyjazdu</th><th>Data Odjazdu</th>";
+            $.each(students, function (index, student) {
+                strResult += "<tr><td>" + student.ID + "</td><td> " + student.Imie + "</td><td>" + student.Nazwisko + "</td><td>" + student.takObiad + "</td><td>" + student.takNocleg + "</td><td>" + student.takOplata + "</td><td>" + student.dataPrzyjazdu + "</td><td>" + student.dataOdjazdu + "</td></tr>";
+            });
+            strResult += "</table>";
+            $("#divResult").html(strResult);
+        }
+    }
+
+</script>
+<div class="row">
+    <div class="col-md-9">
+        <h1 style="color: #f00">Lista uczestników </h1>
+        <div id="divResult"></div>
+    </div>
+<div class="col-md-3 ">
+<div>
+    <h1 style="color: #f00">Dodaj, zaktualizuj lub usuń uczestnika </h1>
+    <table style="margin-left: 15px">
+        <tr>
+            <td><span>ID</span></td>
+            <td>
+                <input class="form-control" id="newID" type="number" />
+            </td>
+        </tr>
+        <tr>
+            <td><span>Imie</span></td>
+            <td>
+                <input class="form-control" id="newImie" type="text" />
+            </td>
+        </tr>
+        <tr>
+            <td><span>Nazwisko</span></td>
+            <td>
+                <input class="form-control" id="newNazwisko" type="text" />
+            </td>
+        </tr>
+        <tr>
+            <td><span>Czy Obiad?</span></td>
+            <td>
+                <select class="form-control" id="newTakObiad">
+                    <option value="true">Tak</option>
+                    <option value="false">Nie</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><span>Czy Nocleg?</span></td>
+            <td>
+                <select class="form-control" id="newTakNocleg">
+                    <option value="true">Tak</option>
+                    <option value="false">Nie</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><span>Czy Opłata?</span></td>
+            <td>
+                <select class="form-control" id="newTakOplata">
+                    <option value="true">Tak</option>
+                    <option value="false">Nie</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><span>Data Przyjazdu</span></td>
+            <td>
+                <input class="form-control" id="newDataPrzyjazdu" type="text" />
+            </td>
+        </tr>
+        <tr>
+            <td><span>Data Odjazdu</span></td>
+            <td>
+                <input class="form-control" id="newDataOdjazdu" type="text" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button class="btn-success btn-lg" id="postStudent" onclick="AddStudent()">Dodaj</button>
+
+                <button class="btn-warning btn-lg" id="putStudent" onclick="PutStudent()">Edytuj</button>
+  
+                <button class="btn-danger btn-lg" id="delStudent" onclick="Delete()">Usuń</button>
+            </td>
+        </tr>
+    </table>
+</div>
+</div>
+</div>
+<div>
+    <h1 style="color: #f00">Szczegóły uczestnika </h1>
+</div>
+<div style="margin-left: 15px">
+    <h3>Podaj ID:</h3>
+    <input class="form-control" id="studentId" type="text" />
+    <button class="btn-success btn-lg" id="GetStudent" onclick="GetStudent()">Znajdz uczestnika</button>
+</div>
+<div style="margin-left: 15px">
+    <table>
+        <tr>
+            <td>
+                <h3>ID</h3>
+            </td>
+            <td><span id="ID"></span></td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Imie</h3>
+            </td>
+            <td><span id="Imie"></span></td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Nazwisko</h3>
+            </td>
+            <td><span id="Nazwisko"></span></td>
+        </tr>
+        <tr>
+            <td>
+                <h3>takObiad</h3>
+            </td>
+            <td><span id="takObiad"></span></td>
+        </tr>
+        <tr>
+            <td>
+                <h3>takNocleg</h3>
+            </td>
+            <td><span id="takNocleg"></span></td>
+        </tr>
+        <tr>
+            <td>
+                <h3>takOplata</h3>
+            </td>
+            <td><span id="takOplata"></span></td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Data Przyjazdu</h3>
+            </td>
+            <td><span id="dataPrzyjazdu"></span></td>
+        </tr>
+        <tr>
+            <td>
+                <h3>Data Odjazdu</h3>
+            </td>
+            <td><span id="dataOdjazdu"></span></td>
+        </tr>
+    </table>
+</div>
